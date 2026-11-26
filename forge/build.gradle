@@ -1,0 +1,80 @@
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = mod_version
+group = 'dev.avectus.illusionerfixes'
+base { archivesName = 'illusioner-fixes' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods { illusionerfixes { source sourceSets.main } }
+        }
+        client {
+            if (project.hasProperty('quickPlay')) { args '--quickPlaySingleplayer', project.property('quickPlay') }
+            if (project.hasProperty('testScript')) { property 'illusionerfixes.test.script', project.property('testScript') }
+            jvmArgs '-Xmx3G'
+        }
+        server { args '--nogui' }
+    }
+}
+
+mixin {
+    add sourceSets.main, 'illusionerfixes.refmap.json'
+    config 'illusionerfixes.mixins.json'
+    config 'illusionerfixes.xaero.mixins.json'
+    config 'illusionerfixes.embeddium.mixins.json'
+}
+
+repositories {
+    flatDir { dir 'libs' }
+}
+
+// Test mods for the dev client (remapped to dev names); optional ones are switched with -Pwith=...
+def testMods = (project.findProperty('with') ?: 'corpse').split(',').findAll { it }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // The Illusioner itself; a widened copy only so javac accepts its package-private classes that
+    // the mixins touch from inside the mod. The released jar is the official one, unchanged.
+    implementation fg.deobf('local:illusioner-widened:1')
+    // Optional compat targets: compiled against, never shipped.
+    compileOnly fg.deobf('local:xaerominimap:1')
+    compileOnly fg.deobf('local:embeddium:1')
+    compileOnly fileTree(dir: 'libs', include: 'compileonly-*.jar')
+
+    testMods.each { name ->
+        switch (name) {
+            case 'ru': runtimeOnly fg.deobf('local:regionsunexplored:1'); runtimeOnly fg.deobf('local:terrablender:1'); runtimeOnly fg.deobf('local:lithostitched:1'); break
+            case 'structurify': runtimeOnly fg.deobf('local:structurify:1'); runtimeOnly fg.deobf('local:yacl:1'); break
+            case 'slo': runtimeOnly fg.deobf('local:slo:1'); runtimeOnly fg.deobf('local:resourcefulconfig:1'); break
+            case 'xaero': runtimeOnly fg.deobf('local:xaerominimap:1'); runtimeOnly fg.deobf('local:xaeroworldmap:1'); break
+            case 'embeddium': runtimeOnly fg.deobf('local:embeddium:1'); break
+            case 'oculus': runtimeOnly fg.deobf('local:embeddium:1'); runtimeOnly fg.deobf('local:oculus:1'); break
+            default: runtimeOnly fg.deobf("local:${name}:1")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+tasks.named('jar') {
+    exclude 'dev/avectus/illusionerfixes/devtest/**'
+    manifest {
+        attributes('Implementation-Version': project.version, 'Implementation-Title': 'Illusioner Fixes',
+            'MixinConfigs': 'illusionerfixes.mixins.json,illusionerfixes.xaero.mixins.json,illusionerfixes.embeddium.mixins.json')
+    }
+    finalizedBy 'reobfJar'
+}
