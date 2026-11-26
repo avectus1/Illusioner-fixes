@@ -12,6 +12,4 @@ addon for fqkeh's the illusioner (1.2.0+). not made by fqkeh or lukidonu. if eit
 - the arena floor looks right with embeddium / oculus
 - no xaero death waypoints in the void
 
-## build
 
-put the jars from build.gradle in `libs/` and run `./gradlew build` (java 17).
