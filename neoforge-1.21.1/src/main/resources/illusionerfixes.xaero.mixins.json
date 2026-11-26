@@ -1,0 +1,12 @@
+{
+	"required": false,
+	"package": "dev.avectus.illusionerfixes.compat.xaero",
+	"plugin": "dev.avectus.illusionerfixes.compat.xaero.XaeroMixinPlugin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"DeathpointHandlerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

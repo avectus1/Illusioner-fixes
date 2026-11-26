@@ -1,0 +1,21 @@
+# Illusioner Fixes (NeoForge 1.21.1)
+
+> **Disclaimer:** Illusioner Fixes is an **unofficial, fan-made addon**. It is not affiliated with or endorsed by **fqkeh**, the author of *The Illusioner*, or **lukidonu**, the author of *Luki's Woodland Mansions*. All credit for those mods goes to their authors. This addon contains none of their code or assets (except, in the Forge 1.20.1 version, one small corrected Luki's loot-table file), and *The Illusioner* must be downloaded from its official page. Please report problems you only see with this addon to me, not to them.
+>
+> If fqkeh or lukidonu would like this addon changed or taken down, just contact me and I'll gladly do it right away.
+
+Addon for fqkeh's [The Illusioner](https://www.curseforge.com/minecraft/mc-mods/the-illusioner) on NeoForge 1.21.1. Install it next to The Illusioner (1.2.0+).
+
+- **Cutscene and arena chunks.** The arena's chunk ticket is re-asserted every tick, in case a chunk-management mod drops it, and the boss is only spawned once its chunk can hold it. (Since The Illusioner 1.2.0, it waits for a hidden or unloaded boss and cleans up leftover bosses itself, so those parts of this addon were removed.)
+- **Corpse compatibility (optional).** Corpses of players who die in the arena are moved to the centre of the current circle, follow it across the shattered path ("come to me"), and are carried back to the overworld, to where their owner entered, when the encounter ends.
+- **Matching basement wood (optional, Lithostitched).** Mods that re-palette woodland mansions through Lithostitched (Regions Unexplored: redwood in redwood forests, blackwood in blackwood taiga, ...) now re-palette the basement the same way, judged at the mansion entrance. The mansion itself is now judged there too: vanilla judges it at the centre of its box, ~40 blocks from where it spawned, so mansions that spawned in Regions Unexplored's small blackwood taiga patches almost never got blackwood. Dark oak trapdoors, slabs and wood follow the chosen wood when that wood has them.
+- **Luki's Woodland Mansions (optional).** Luki's mod turns the mansion into a jigsaw structure, so The Illusioner's basement was never built under it and the sculk note block had nothing to find. The basement is now built under Luki's stone maze level: walk in the front door, through the passage under the entrance terrace and down the corridor straight ahead, and the stairs go down in the east side of the central hall, by its trial spawners. Luki's floor is kept around the stairwell, and the whole basement stays under the mansion's footprint so it always generates complete. Only new mansions get it.
+- **Arena floor with Sodium / Iris (optional).** The arena floor is obsidian that The Illusioner hides while building chunk meshes, then covers with its own see-through mirror floor. Sodium (which Iris needs) replaces vanilla's chunk builder, so the obsidian was never hidden and the floor looked like plain obsidian, with or without a shader pack. The blocks The Illusioner hides (the arena obsidian, vanishing platforms, the blackout) are now hidden in Sodium's chunk builder too. (1.4.3: removed a second floor tweak that, together with this one, made ghost models flash on screen.)
+- **No death waypoints in the void (optional, Xaero's Minimap).** Dying in the corrupted void no longer drops a Xaero death waypoint there. The Illusioner respawns you where you entered the arena, and your items (or corpse) go there too, so a void waypoint is useless, and making one would also mark your real last death waypoint as old or delete it.
+- **Now in The Illusioner itself (removed here in 1.5.0):** waiting for a hidden or unloaded boss, removing leftover bosses from interrupted fights, and the dry basement.
+
+Build: put The Illusioner jar in `libs/` and run `./gradlew build` (see `build.gradle` for the compile-only widened copy).
+
+## Tested alongside
+
+The Illusioner 1.2.0, Sodium 0.8 + Iris 1.8 (Complementary Reimagined, BSL), Luki's Woodland Mansions, Structurify, Structure Layout Optimizer, Regions Unexplored + Lithostitched, Xaero's Minimap and World Map, Corpse. Xaero's entity radar shows the Illusioner and its clones as identical dots, so it does not give the real one away.
